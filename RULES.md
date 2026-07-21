@@ -25,9 +25,8 @@ failed.* You refine your harness, maybe switch models, and resubmit to climb.
 ## Scoring
 1. **Gate — "it works":** your `engine.ts` must pass **38/38 core** hidden tests to qualify.
    A good harness gets there; a bare build does not.
-2. **Champion (main prize): lowest total token cost** among everyone who clears the gate.
-3. **Sharpshooter (crown): most bonus edge tests** passed (of 8). Ties → lower cost.
-4. **Champion tie-breaks:** more bonus tests, then earliest to reach the gate.
+2. **Champion (the prize): lowest total credit cost** among everyone who clears the gate.
+3. **Tie-breaks:** most of the 8 bonus edge-case tests passed, then earliest to reach the gate.
 
 ## You build the harness — the agent builds the feature
 - **You may author freely:** `.github/copilot-instructions.md`, `AGENTS.md`, a distilled or
@@ -37,23 +36,29 @@ failed.* You refine your harness, maybe switch models, and resubmit to climb.
   run tests, and it does **not** score itself — there is no test suite in this repo.
 - **You may not hand-write or hand-edit any code under `src/`.** You steer; the agent types.
 
-## Submitting
-1. Work on your own branch: **`submit/<your-name>`** in the shared repo.
-2. Put your **cumulative token cost** (the number from your agent's usage summary, summed
-   across all your runs) in a file **`COST.txt`** at the repo root.
-3. **Push.** That's a submission. Re-push anytime before pencils-down to update your score.
+## Submitting (fork model)
+1. **Fork** this repo (top-right on GitHub) — that's your copy; no invite needed.
+2. Run the agent with the provided wrapper — `node agent-run.mjs --model <yours>` — which
+   builds the engine **and writes your cumulative cost to `COST.txt` automatically.** (See
+   `QUICKSTART.md` for one-time Copilot-CLI setup.)
+3. Commit `src/pricing/engine.ts` + `COST.txt` and **push to your fork.** Re-push anytime
+   before pencils-down to update your score — the judge auto-discovers every fork.
 
 ## Rules
-1. **All spend counts** — exploration, failed runs, everything. Under-reporting `COST.txt`
-   is a DQ; the facilitator can reconcile against the model dashboard.
-2. **Model choice is yours** and it's the biggest cost lever — *find the cheapest model your
+1. **Scored deliverable = `priceOrder` only** (SPEC §1.1). The OrderPage / UI wiring in the
+   spec is **not scored** — skip it; don't spend credits on it.
+2. **All spend counts** — exploration, failed runs, everything. Under-reporting `COST.txt`
+   is a DQ; the top scorers screen-share their Copilot credit readout before prizes.
+3. **Model choice is yours** and it's the biggest cost lever — *find the cheapest model your
    harness can carry to a passing build.*
-3. **The agent must not write or run tests**, and must not score itself.
-4. **Frozen files** — don't edit `src/data/*.json` or add test files to your submission; the
-   judge resets these to canonical before scoring.
-5. **No test-suite fishing.** The hidden suite isn't in the repo and won't be discussed. It's
+4. **The agent must not write or run tests**, and must not score itself.
+5. **Copying another fork's `engine.ts` = DQ.** The judge flags identical engines. Your
+   harness files can stay local — only `engine.ts` + `COST.txt` need pushing.
+6. **Frozen files** — don't edit `src/data/*.json`; the judge resets them to canonical
+   before scoring.
+7. **No test-suite fishing.** The hidden suite isn't in the repo and won't be discussed. It's
    written from `SPEC.md` — which you have. Read the spec carefully instead.
-6. **Pencils down** = your last push before the final checkpoint.
+8. **Pencils down** = your last push before the final checkpoint.
 
 ## Strategy hints (this is the point)
 - The agent is smart — it gets most of a clean spec right on its own. Your edge is making the

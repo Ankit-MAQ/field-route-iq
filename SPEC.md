@@ -114,11 +114,14 @@ Promotions live in `src/data/promotions.json`. Three `type` values exist:
 
 ## 6. Rounding & money
 
-- All money values in the output are rounded to **2 decimal places, half-up**
-  (e.g. `1.005 → 1.01`, `2.674999 → 2.67`).
-- Round each line's `gross` and `discount` independently, then compute
-  `net = gross - discount` (already-rounded operands; clamp at 0).
-- `subtotal` = sum of rounded line nets. `total = subtotal - orderLevel.discount`,
+- **Every** money value in the output is rounded to **2 decimal places, half-up** —
+  `gross`, `discount`, `net`, `subtotal`, `total`, and the order-level discount.
+  Half-up means `1.005 → 1.01`; and beware float artifacts: `2.175` is stored as
+  `2.17499…`, so a naive `Math.round(x*100)/100` gives `2.17` when the spec requires `2.18`.
+- Round each line's `gross` and `discount` independently, then
+  `net = round2(gross − discount)`, clamped at 0. (A raw subtraction of two rounded
+  operands can still leave `18.669999…`; the output must be `18.67` — round it.)
+- `subtotal = round2(sum of line nets)`. `total = round2(subtotal − orderLevel.discount)`,
   clamped at 0.
 
 ## 7. Edge cases the engine must handle

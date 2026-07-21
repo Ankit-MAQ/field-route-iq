@@ -1,60 +1,50 @@
 # Quickstart — how to compete (5-minute read)
 
-Goal: get an AI agent to build `src/pricing/engine.ts` per `SPEC.md`, **correctly and for
-the fewest AI credits.** You build the *harness*; the agent builds the feature. Read
-`RULES.md` for the full rules; this is just the mechanics.
+Goal: get an AI agent to build `src/pricing/engine.ts` per `SPEC.md`, **correctly and for the
+fewest AI credits.** You build the *harness*; the agent builds the feature. See `RULES.md` for
+the full rules, or open `guide.html` for the visual version.
 
-## 1. Get set up
-1. Accept the repo invite (email, or https://github.com/tyecolemanmaq/field-route-iq/invitations).
-2. Clone and make your branch:
-   ```bash
-   git clone https://github.com/tyecolemanmaq/field-route-iq
-   cd field-route-iq
-   npm install
-   git checkout -b submit/<your-name>
-   ```
+## 0. One-time setup — do this BEFORE the session
+- **Node 20+** — check with `node --version`.
+- **Install the Copilot CLI:** `npm install -g @github/copilot`
+- **Sign in:** run `copilot` and authenticate with the **GitHub account that has your Copilot
+  license** (your work account — *not* a personal one). Verify: `copilot -p "hello"` should
+  print an `AI Credits …` line. No line = wrong account / no Copilot access; fix it now.
+
+## 1. Fork & clone
+Fork this repo on GitHub (top-right button), then:
+```bash
+git clone https://github.com/<you>/field-route-iq
+cd field-route-iq
+npm install
+```
 
 ## 2. Build your harness (this is the competition)
-Author whatever helps your agent understand this brownfield repo fast and correctly —
-a `.github/copilot-instructions.md`, a distilled/annotated version of the spec, a repo-map
-of what to read and what to ignore. `SPEC.md` is the only source of truth; **some files
-here are deliberately wrong** (`src/legacy/`, `docs/NOTES.md`) — a good harness tells the
-agent to ignore them.
+Author whatever helps your agent understand this brownfield repo fast and correctly — a
+`.github/copilot-instructions.md`, a distilled spec, a repo-map of what to read and what to
+ignore. **`SPEC.md` is the only source of truth; not everything else in the repo is reliable.**
+All your competitive edge lives in these files + your model choice — not in a prompt.
 
-## 3. Run the agent (GitHub Copilot in VS Code)
-- Open the repo in VS Code, open **Copilot Chat**, switch to **Agent** mode, pick your model.
-- Point it at your harness and have it create **`src/pricing/engine.ts`**. That's the only
-  file it should build. **Do not have it write or run tests** — there are none, and it must
-  not score itself.
-- Every run spends AI credits, and **your cost is cumulative** — so a lean harness that gets
-  it right in one cheap run beats lots of expensive retries.
-
-## 4. Read your cost  ← the number for COST.txt
-In the **Copilot Chat input box**, hover (or click) the **context-window control** — the
-popover shows **"total cost in credits … for the whole session."** That credits number is
-your cost. (Do all your work in **one chat session** so it reflects your true total; hovering
-an individual response shows that turn's cost.)
-
-Put that number in a file `COST.txt` at the repo root:
+## 3. Run the agent — it auto-records your cost
 ```bash
-echo "9.25" > COST.txt      # <- your total AI credits, e.g. 9.25
+node agent-run.mjs --model <your-model>
 ```
-> 1 AI credit = $0.01. Credits already account for model price, so a cheaper model = fewer
-> credits. Under-reporting is a DQ — the facilitator reconciles the top scores against the
-> Copilot usage dashboard.
+This runs Copilot (CLI) with a fixed prompt against **your** harness files, writes only
+`src/pricing/engine.ts`, then **adds the run's exact credits to `COST.txt`** and prints
+`compiles: ✓/✗`. Cost is **cumulative** — a lean harness that lands it in one cheap run beats a
+pile of retries. Switch `--model` to find the cheapest model your harness can carry.
 
-## 5. Submit (and resubmit to climb)
+## 4. Submit (and resubmit to climb)
 ```bash
 git add src/pricing/engine.ts COST.txt
-git commit -m "submission"
-git push -u origin submit/<your-name>
+git commit -m submission
+git push
 ```
-That's a submission. At each **checkpoint** the judge posts your score + cost on the live
-board (you won't see *which* tests failed — reason from the spec). Refine your harness, maybe
-switch models, update `COST.txt`, and **push again** to improve. **Pencils down = your last
-push** before the final checkpoint.
+The judge auto-discovers your fork at each **checkpoint** and posts your score + cost on the live
+board (you won't see *which* tests failed — reason from the spec). Refine, re-run, push again.
+**Pencils down = your last push.**
 
-## Scoring recap
+## Scoring
 - **Gate:** your engine must pass **38/38 core** hidden tests to qualify.
-- **Champion:** lowest total AI-credit cost among those who qualify.
-- **Sharpshooter:** most bonus edge tests passed.
+- **Champion:** lowest total AI-credit cost among those who qualify. Ties → most of the 8 bonus
+  edge-case tests, then earliest to qualify.

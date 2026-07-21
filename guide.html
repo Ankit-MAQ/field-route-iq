@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Field Route IQ — Harness Hackathon</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --ground:#f3f5f8; --panel:#ffffff; --ink:#161b22; --muted:#5b6672; --hair:#dfe4ea;
+    --accent:#c07a1e; --accent-soft:#f6ecdb; --good:#2e9e6b; --good-soft:#e4f2ea;
+    --bad:#c0492e; --shadow:0 1px 2px rgba(20,24,31,.06),0 8px 24px rgba(20,24,31,.05);
+    --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#0f1319; --panel:#161c26; --ink:#e7ebf1; --muted:#93a0b0; --hair:#26303c;
+      --accent:#e0a24a; --accent-soft:#2a2013; --good:#4bbd85; --good-soft:#12241b;
+      --bad:#e06b4e; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f3f5f8; --panel:#ffffff; --ink:#161b22; --muted:#5b6672; --hair:#dfe4ea;
+    --accent:#c07a1e; --accent-soft:#f6ecdb; --good:#2e9e6b; --good-soft:#e4f2ea; --bad:#c0492e;
+    --shadow:0 1px 2px rgba(20,24,31,.06),0 8px 24px rgba(20,24,31,.05);
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1319; --panel:#161c26; --ink:#e7ebf1; --muted:#93a0b0; --hair:#26303c;
+    --accent:#e0a24a; --accent-soft:#2a2013; --good:#4bbd85; --good-soft:#12241b; --bad:#e06b4e;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased;font-size:17px}
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px}
+  section{padding:52px 0;border-top:1px solid var(--hair)}
+  section:first-of-type{border-top:0}
+  h1,h2,h3{line-height:1.15;text-wrap:balance;margin:0}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:14px}
+  p{margin:0 0 14px;max-width:64ch}
+  a{color:var(--accent)}
+  code,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .lede{font-size:19px;color:var(--muted)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;
+    padding:3px 9px;border-radius:100px;border:1px solid var(--hair);color:var(--muted)}
+
+  /* hero */
+  .hero{padding:64px 0 52px}
+  .hero h1{font-size:clamp(34px,6vw,52px);font-weight:800;letter-spacing:-.02em}
+  .hero h1 .amber{color:var(--accent)}
+  .hero .lede{margin-top:18px;font-size:20px;max-width:60ch}
+  .proof{margin-top:34px;display:grid;grid-template-columns:1fr auto 1fr;gap:0;
+    background:var(--panel);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .proof .cell{padding:20px 22px}
+  .proof .cell.mid{display:flex;align-items:center;justify-content:center;color:var(--muted);
+    border-left:1px solid var(--hair);border-right:1px solid var(--hair);font-family:var(--mono);font-size:22px}
+  .proof .k{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+  .proof .v{font-size:26px;font-weight:750;margin-top:6px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .proof .cell.win .v{color:var(--good)}
+  .proof .sub{font-size:13px;color:var(--muted);margin-top:2px}
+  .proof-note{font-size:14px;color:var(--muted);margin-top:12px;font-style:italic}
+  @media(max-width:560px){.proof{grid-template-columns:1fr}.proof .cell.mid{border:0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:8px}}
+
+  /* steps */
+  .steps{display:flex;flex-direction:column;gap:2px;margin-top:24px}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:18px;padding:20px;border:1px solid var(--hair);
+    background:var(--panel);border-radius:12px}
+  .step .n{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--accent);
+    border:1px solid var(--hair);border-radius:9px;height:36px;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:18px;font-weight:700;margin-bottom:5px}
+  .step p{font-size:15.5px;margin:0;color:var(--muted)}
+  .step p+p{margin-top:8px}
+  .step .cmd{font-family:var(--mono);font-size:13.5px;background:var(--ground);border:1px solid var(--hair);
+    border-radius:8px;padding:9px 12px;color:var(--ink);margin-top:10px;overflow-x:auto;white-space:nowrap}
+
+  /* cost callout */
+  .callout{background:var(--accent-soft);border:1px solid var(--accent);border-radius:14px;padding:26px 26px;margin-top:22px}
+  .callout .eyebrow{color:var(--accent)}
+  .callout h3{font-size:20px;font-weight:750;margin-bottom:10px}
+  .callout .cost-demo{display:flex;align-items:center;gap:12px;margin:16px 0 6px;flex-wrap:wrap}
+  .chatbar{flex:1;min-width:240px;display:flex;align-items:center;gap:10px;background:var(--panel);
+    border:1px solid var(--hair);border-radius:10px;padding:10px 12px}
+  .chatbar .ctx{font-family:var(--mono);font-size:12.5px;border:1px solid var(--accent);color:var(--accent);
+    border-radius:7px;padding:4px 8px;background:var(--panel);white-space:nowrap}
+  .chatbar .type{color:var(--muted);font-size:14px}
+  .arrow{font-family:var(--mono);color:var(--accent);font-weight:700}
+  .costfile{font-family:var(--mono);font-size:13.5px;background:var(--panel);border:1px solid var(--hair);
+    border-radius:8px;padding:9px 12px}
+  .fmt{margin-top:18px;border:1px dashed var(--accent);border-radius:10px;padding:15px 16px;background:var(--panel)}
+  .fmt-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:9px}
+  .fmt-file{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--ink);background:var(--ground);
+    border:1px solid var(--hair);border-radius:7px;padding:8px 16px;display:inline-block;font-variant-numeric:tabular-nums}
+  .fmt-note{font-size:13.5px;color:var(--muted);margin-top:10px}
+
+  /* scoring cards */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:22px}
+  .card{background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+  .card .tag{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+  .card h3{font-size:17px;font-weight:750;margin:8px 0 6px}
+  .card p{font-size:14px;color:var(--muted);margin:0}
+  .card.gate{border-color:var(--accent)}
+  @media(max-width:640px){.cards{grid-template-columns:1fr}}
+
+  /* leaderboard */
+  .board{background:var(--panel);border:1px solid var(--hair);border-radius:12px;overflow:hidden;margin-top:22px;box-shadow:var(--shadow)}
+  .board .head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--hair);
+    font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
+  th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--hair)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+  tr:last-child td{border-bottom:0}
+  td.rank{color:var(--accent);font-weight:700;width:38px}
+  td.cost{font-weight:700}
+  .q{color:var(--good)} .nq{color:var(--muted)}
+  .badge{font-size:11px;padding:2px 7px;border-radius:100px}
+  .badge.q{background:var(--good-soft);color:var(--good)}
+  .badge.nq{background:var(--ground);color:var(--muted);border:1px solid var(--hair)}
+
+  /* timeline */
+  .rail{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:22px;border:1px solid var(--hair);
+    border-radius:12px;overflow:hidden;background:var(--panel)}
+  .rail .t{padding:16px 14px;border-right:1px solid var(--hair)}
+  .rail .t:last-child{border-right:0}
+  .rail .clock{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:700}
+  .rail .lab{font-size:13px;margin-top:6px;color:var(--muted)}
+  .rail .cp{color:var(--accent)}
+  @media(max-width:640px){.rail{grid-template-columns:1fr;}.rail .t{border-right:0;border-bottom:1px solid var(--hair)}.rail .t:last-child{border-bottom:0}}
+
+  ul.rules{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-direction:column;gap:11px}
+  ul.rules li{padding-left:26px;position:relative;color:var(--ink)}
+  ul.rules li::before{content:"→";position:absolute;left:0;color:var(--accent);font-family:var(--mono)}
+  ul.rules b{font-weight:700}
+  footer{padding:40px 0 60px;color:var(--muted);font-size:13.5px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Field Route IQ · AI harness challenge</div>
+    <h1>Same feature.<br>Best <span class="amber">harness</span> wins.</h1>
+    <p class="lede">Everyone builds the same missing feature — the pricing &amp; promotions logic
+      behind the order screen, specified in <code>SPEC.md</code>. Any AI agent can write it in a
+      couple of minutes, so <i>building</i> it isn't what separates you. <b>The harness you put
+      around the agent — how correctly and how cheaply it lands the feature — is the contest.</b></p>
+    <p class="lede" style="margin-top:6px">Cheapest correct submission wins.</p>
+  </header>
+
+  <section>
+    <div class="eyebrow">Before the session · one-time setup (5 min)</div>
+    <h2>Prerequisites</h2>
+    <p>Do this <b>before</b> you arrive. A missing or wrong login is the single thing that'll cost you
+      time on the day — don't sort it out during the race.</p>
+    <div class="steps">
+      <div class="step"><div class="n">✓</div><div>
+        <h3>Node.js 20+</h3>
+        <div class="cmd">node --version   # want v20 or newer</div>
+      </div></div>
+      <div class="step"><div class="n">✓</div><div>
+        <h3>Install the GitHub Copilot CLI</h3>
+        <div class="cmd">npm install -g @github/copilot</div>
+      </div></div>
+      <div class="step"><div class="n">✓</div><div>
+        <h3>Sign in — with the RIGHT account</h3>
+        <div class="cmd">copilot</div>
+        <p>Sign in with the <b>GitHub account that has your Copilot license</b> (your work account) —
+          <b>not</b> a personal one. Wrong account = no models available, and nothing will run.</p>
+      </div></div>
+      <div class="step"><div class="n">✓</div><div>
+        <h3>Confirm it works</h3>
+        <div class="cmd">copilot -p "hello"</div>
+        <p>You should see an <code>AI Credits …</code> line at the end. No line = you're not signed in with a
+          Copilot-enabled account — fix that now.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">The flow · six steps</div>
+    <h2>What you actually do</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div>
+        <h3>Fork the repo</h3>
+        <p>On the repo page, click <b>Fork</b>. That's your private copy of the arena — no invite needed.</p>
+      </div></div>
+      <div class="step"><div class="n">2</div><div>
+        <h3>Clone your fork &amp; install</h3>
+        <div class="cmd">git clone https://github.com/&lt;you&gt;/field-route-iq &amp;&amp; cd field-route-iq &amp;&amp; npm install</div>
+      </div></div>
+      <div class="step"><div class="n">3</div><div>
+        <h3>Build your harness — this is the whole competition</h3>
+        <p>Engineer whatever context makes the agent understand this brownfield project and build
+          the feature correctly in as few credits as possible. <b>How you do that is the challenge</b>,
+          and where the leaderboard is won.</p>
+        <p><b>SPEC.md is the only source of truth.</b> Read it closely — not everything else in this
+          repo is reliable.</p>
+      </div></div>
+      <div class="step"><div class="n">4</div><div>
+        <h3>Run the agent — it builds <code>src/pricing/engine.ts</code></h3>
+        <p>Run the agent through the wrapper (details below). It uses your harness files, writes only
+          that one file, and <b>records the run's cost to <code>COST.txt</code> automatically.</b></p>
+        <div class="cmd">node agent-run.mjs "build src/pricing/engine.ts per SPEC.md and my harness"</div>
+      </div></div>
+      <div class="step"><div class="n">5</div><div>
+        <h3>Iterate — and stay lean</h3>
+        <p>Refine your harness, maybe switch models, re-run. Each run <b>adds to your cumulative
+          <code>COST.txt</code></b> — so a lean harness that lands it in one cheap run beats a pile of
+          retries. The agent must never write or run tests.</p>
+      </div></div>
+      <div class="step"><div class="n">6</div><div>
+        <h3>Commit &amp; push — then re-push to climb</h3>
+        <div class="cmd">git add src/pricing/engine.ts COST.txt &amp;&amp; git commit -m submit &amp;&amp; git push</div>
+        <p>At each checkpoint the leaderboard updates. Refine your harness, maybe switch models,
+          update <code>COST.txt</code>, push again. <b>Pencils down = your last push.</b></p>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="callout">
+      <div class="eyebrow">How cost is measured — do this</div>
+      <h3>Run your agent through the Copilot CLI</h3>
+      <p>The Copilot CLI prints the <b>exact credits</b> it spent after every run. We ship a small
+        wrapper that runs it (using your harness files automatically) and <b>adds each run's credits
+        to <code>COST.txt</code> for you</b> — nothing to read off a screen.</p>
+      <div class="costfile" style="overflow-x:auto;white-space:nowrap;margin:14px 0 0">node agent-run.mjs "build src/pricing/engine.ts per SPEC.md and my harness"</div>
+      <div class="cost-demo">
+        <div class="chatbar"><span class="ctx">AI Credits 9.25</span><span class="type">printed after every run</span></div>
+        <span class="arrow">→</span>
+        <div class="costfile">added to COST.txt</div>
+      </div>
+
+      <div class="fmt">
+        <div class="fmt-label">COST.txt — the whole file</div>
+        <div class="fmt-file">9.25</div>
+        <div class="fmt-note"><b>One number on the first line</b> — your total AI credits across
+          <i>every</i> run, not just your last. Nothing else in the file. (1 credit = $0.01; the judge
+          reads the first number it finds.)</div>
+      </div>
+
+      <p style="margin:14px 0 0;font-size:14px;color:var(--muted)">
+        One-time setup: <code>npm install -g @github/copilot</code>, then run <code>copilot</code> and sign in.
+        Credits already price in the model, so a cheaper model = fewer credits. Top scorers screen-share
+        their credit total before prizes. <b>Under-reporting is a DQ.</b></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">How you're scored</div>
+    <h2>Qualify, then cheapest wins</h2>
+    <div class="cards">
+      <div class="card gate">
+        <div class="tag">Step 1 · qualify</div>
+        <h3>The gate</h3>
+        <p>Your engine must pass <b>38/38 core</b> hidden tests. A good harness clears it; a bare build doesn't.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Step 2 · win</div>
+        <h3>Champion</h3>
+        <p>Lowest total credit cost among everyone who qualifies. Model choice is your biggest lever.
+          Ties break on the 8 bonus edge-case tests, then earliest to qualify.</p>
+      </div>
+    </div>
+
+    <div class="board" aria-label="example leaderboard">
+      <div class="head"><span>Live leaderboard — example</span><span>gate 38/38 core</span></div>
+      <table>
+        <thead><tr><th>#</th><th>who</th><th>core</th><th>bonus</th><th>cost</th><th>status</th></tr></thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>carol</td><td>38/38</td><td>8/8</td><td class="cost">9.25</td><td><span class="badge q">qualified</span></td></tr>
+          <tr><td class="rank">2</td><td>dave</td><td>38/38</td><td>8/8</td><td class="cost">13.25</td><td><span class="badge q">qualified</span></td></tr>
+          <tr><td class="rank">3</td><td>bob</td><td>38/38</td><td>7/8</td><td class="cost">15.50</td><td><span class="badge q">qualified</span></td></tr>
+          <tr><td class="rank">–</td><td class="nq">alice</td><td>35/38</td><td>7/8</td><td class="cost nq">6.00</td><td><span class="badge nq">below gate</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px;font-size:14.5px;color:var(--muted)">Note alice: <b>cheapest, but not
+      correct enough to qualify.</b> The gate is why cheap-but-wrong can't win.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">90 minutes</div>
+    <h2>The shape of the session</h2>
+    <div class="rail">
+      <div class="t"><div class="clock">0:00</div><div class="lab">Kickoff &amp; rules</div></div>
+      <div class="t"><div class="clock cp">~0:25</div><div class="lab">Checkpoint 1</div></div>
+      <div class="t"><div class="clock cp">~0:55</div><div class="lab">Checkpoint 2</div></div>
+      <div class="t"><div class="clock">~1:20</div><div class="lab">Pencils down</div></div>
+      <div class="t"><div class="clock">1:25</div><div class="lab">Results</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">The rules that matter</div>
+    <h2>Read these once</h2>
+    <ul class="rules">
+      <li><b>You build the harness; the agent writes the code.</b> No hand-writing or hand-editing anything under <code>src/</code>.</li>
+      <li><b>Scored deliverable = <code>priceOrder</code> only</b> (SPEC §1.1). The OrderPage/UI wiring in the spec is <b>not scored</b> — skip it; don't spend credits on it.</li>
+      <li><b>The agent writes no tests and never scores itself.</b> There are none in the repo; the judge runs the hidden suite at each checkpoint.</li>
+      <li><b>SPEC.md is the only truth.</b> Trust it over any file or comment that disagrees.</li>
+      <li><b>All spend counts</b> — exploration, failed runs, everything. Report your cumulative credits honestly.</li>
+      <li><b>Copying another fork's engine = DQ.</b> The judge flags identical engines. (Harness files can stay local; only <code>engine.ts</code> + <code>COST.txt</code> need pushing.)</li>
+    </ul>
+  </section>
+
+  <footer>Field Route IQ · Harness Hackathon · the spec is the only truth.</footer>
+</div>
+
+</body>
+</html>
