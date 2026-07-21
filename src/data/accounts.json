@@ -1,0 +1,10 @@
+[
+  { "id": "a-101", "name": "Corner Fresh Market", "segment": "independent", "region": "North", "address": "412 Birch St" },
+  { "id": "a-102", "name": "Northgate Grocers #12", "segment": "chain", "region": "North", "address": "88 Commerce Way" },
+  { "id": "a-103", "name": "Summit Provisions", "segment": "premium", "region": "East", "address": "1500 Summit Ave" },
+  { "id": "a-104", "name": "Eastside Quick Stop", "segment": "independent", "region": "East", "address": "77 Delancey Rd" },
+  { "id": "a-105", "name": "Northgate Grocers #17", "segment": "chain", "region": "South", "address": "230 Harbor Blvd" },
+  { "id": "a-106", "name": "Harbor Deli & Market", "segment": "premium", "region": "South", "address": "9 Pier Lane" },
+  { "id": "a-107", "name": "Maple Ave Pantry", "segment": "independent", "region": "West", "address": "301 Maple Ave" },
+  { "id": "a-108", "name": "Union Square Foods", "segment": "chain", "region": "West", "address": "64 Union Sq" }
+]

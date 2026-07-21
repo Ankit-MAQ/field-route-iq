@@ -1,0 +1,108 @@
+[
+  {
+    "id": "promo-bev15",
+    "name": "July Beverage Blitz 15%",
+    "type": "percent_off",
+    "percent": 15,
+    "scope": { "category": "beverages" },
+    "validFrom": "2026-07-01",
+    "validTo": "2026-07-31"
+  },
+  {
+    "id": "promo-cola-bogo",
+    "name": "Cola Buy 2 Get 1",
+    "type": "bogo",
+    "productId": "p-cola-12",
+    "buyQty": 2,
+    "getQty": 1,
+    "validFrom": "2026-07-10",
+    "validTo": "2026-07-25"
+  },
+  {
+    "id": "promo-bev-alt",
+    "name": "Cola Loyalty 15%",
+    "type": "percent_off",
+    "percent": 15,
+    "scope": { "productIds": ["p-cola-12"] },
+    "validFrom": "2026-06-15",
+    "validTo": "2026-07-31"
+  },
+  {
+    "id": "promo-snack-thresh",
+    "name": "Snack Rack Builder $6 Off",
+    "type": "threshold",
+    "category": "snacks",
+    "minSubtotal": 50,
+    "amountOff": 6,
+    "validFrom": "2026-07-01",
+    "validTo": "2026-08-31"
+  },
+  {
+    "id": "promo-snack-thresh2",
+    "name": "Snack Case Deal $6 Off",
+    "type": "threshold",
+    "category": "snacks",
+    "minSubtotal": 60,
+    "amountOff": 6,
+    "validFrom": "2026-07-01",
+    "validTo": "2026-08-31"
+  },
+  {
+    "id": "promo-premium-dairy",
+    "name": "Premium Dairy 20%",
+    "type": "percent_off",
+    "percent": 20,
+    "scope": { "category": "dairy" },
+    "eligibleSegments": ["premium"],
+    "validFrom": "2026-07-15",
+    "validTo": "2026-07-22"
+  },
+  {
+    "id": "promo-hydration-10",
+    "name": "Hydration Duo 10%",
+    "type": "percent_off",
+    "percent": 10,
+    "scope": { "productIds": ["p-water-24", "p-energy-4"] },
+    "validFrom": "2026-06-01",
+    "validTo": "2026-07-20"
+  },
+  {
+    "id": "promo-june-snacks",
+    "name": "June Snack Sale 25%",
+    "type": "percent_off",
+    "percent": 25,
+    "scope": { "category": "snacks" },
+    "validFrom": "2026-06-01",
+    "validTo": "2026-06-30"
+  },
+  {
+    "id": "promo-fall-household",
+    "name": "Fall Household 30%",
+    "type": "percent_off",
+    "percent": 30,
+    "scope": { "category": "household" },
+    "validFrom": "2026-08-01",
+    "validTo": "2026-08-31"
+  },
+  {
+    "id": "promo-chain-bev-thresh",
+    "name": "Chain Beverage Volume $5 Off",
+    "type": "threshold",
+    "category": "beverages",
+    "minSubtotal": 40,
+    "amountOff": 5,
+    "eligibleSegments": ["chain"],
+    "validFrom": "2026-07-01",
+    "validTo": "2026-07-31"
+  },
+  {
+    "id": "promo-choc-bogo",
+    "name": "Chocolate Buy 3 Get 2",
+    "type": "bogo",
+    "productId": "p-choc-bar",
+    "buyQty": 3,
+    "getQty": 2,
+    "validFrom": "2026-07-01",
+    "validTo": "2026-07-31"
+  }
+]

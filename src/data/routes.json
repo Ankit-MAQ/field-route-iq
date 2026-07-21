@@ -1,0 +1,33 @@
+[
+  {
+    "id": "r-north-mon",
+    "name": "North Loop",
+    "day": "Monday",
+    "stops": [
+      { "accountId": "a-101", "plannedTime": "08:30" },
+      { "accountId": "a-102", "plannedTime": "09:45" },
+      { "accountId": "a-103", "plannedTime": "11:15" },
+      { "accountId": "a-104", "plannedTime": "13:00" }
+    ]
+  },
+  {
+    "id": "r-harbor-wed",
+    "name": "Harbor Run",
+    "day": "Wednesday",
+    "stops": [
+      { "accountId": "a-105", "plannedTime": "09:00" },
+      { "accountId": "a-106", "plannedTime": "10:30" },
+      { "accountId": "a-104", "plannedTime": "13:30" }
+    ]
+  },
+  {
+    "id": "r-west-fri",
+    "name": "West Corridor",
+    "day": "Friday",
+    "stops": [
+      { "accountId": "a-107", "plannedTime": "08:15" },
+      { "accountId": "a-108", "plannedTime": "10:00" },
+      { "accountId": "a-101", "plannedTime": "14:00" }
+    ]
+  }
+]

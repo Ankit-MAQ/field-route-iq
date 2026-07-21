@@ -1,0 +1,14 @@
+[
+  { "id": "p-cola-12", "name": "Cola 12-pack", "category": "beverages", "unitPrice": 8.99 },
+  { "id": "p-water-24", "name": "Spring Water 24-pack", "category": "beverages", "unitPrice": 5.49 },
+  { "id": "p-energy-4", "name": "Energy Drink 4-pack", "category": "beverages", "unitPrice": 7.25 },
+  { "id": "p-chips-lg", "name": "Kettle Chips Large", "category": "snacks", "unitPrice": 4.79 },
+  { "id": "p-pretzel", "name": "Pretzel Twists", "category": "snacks", "unitPrice": 3.35 },
+  { "id": "p-trailmix", "name": "Trail Mix 10oz", "category": "snacks", "unitPrice": 6.10 },
+  { "id": "p-choc-bar", "name": "Chocolate Bar", "category": "snacks", "unitPrice": 1.99 },
+  { "id": "p-milk-gal", "name": "Whole Milk Gallon", "category": "dairy", "unitPrice": 4.15 },
+  { "id": "p-yogurt-6", "name": "Yogurt 6-pack", "category": "dairy", "unitPrice": 5.89 },
+  { "id": "p-cheese", "name": "Cheddar Block", "category": "dairy", "unitPrice": 6.75 },
+  { "id": "p-paper-tw", "name": "Paper Towels 6-roll", "category": "household", "unitPrice": 9.99 },
+  { "id": "p-dish-soap", "name": "Dish Soap", "category": "household", "unitPrice": 2.89 }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "v-001",
+    "accountId": "a-101",
+    "date": "2026-06-29",
+    "notes": "Reset beverage cooler, owner asked about summer promo flyer.",
+    "shelfScore": 3
+  },
+  {
+    "id": "v-002",
+    "accountId": "a-102",
+    "date": "2026-06-29",
+    "notes": "Full facing on snacks aisle. Backroom overstock of water 24-packs.",
+    "shelfScore": 4
+  },
+  {
+    "id": "v-003",
+    "accountId": "a-105",
+    "date": "2026-07-01",
+    "notes": "New store manager. Walked planogram, left sell sheet.",
+    "shelfScore": 2
+  },
+  {
+    "id": "v-004",
+    "accountId": "a-103",
+    "date": "2026-07-06",
+    "notes": "Premium dairy end-cap approved for mid-July.",
+    "shelfScore": 5
+  },
+  {
+    "id": "v-005",
+    "accountId": "a-104",
+    "date": "2026-07-08",
+    "notes": "Out of stock on cola 12-packs, placed emergency order by phone.",
+    "shelfScore": 2
+  },
+  {
+    "id": "v-006",
+    "accountId": "a-106",
+    "date": "2026-07-10",
+    "notes": "Deli remodel finished. Good placement for trail mix near register.",
+    "shelfScore": 4
+  },
+  {
+    "id": "v-007",
+    "accountId": "a-107",
+    "date": "2026-07-13",
+    "notes": "Shelf tags missing on household. Replaced, tidied chip rack.",
+    "shelfScore": 3
+  },
+  {
+    "id": "v-008",
+    "accountId": "a-108",
+    "date": "2026-07-15",
+    "notes": "Chain HQ audit next month, manager wants full compliance photos.",
+    "shelfScore": 4
+  },
+  {
+    "id": "v-009",
+    "accountId": "a-101",
+    "date": "2026-07-17",
+    "notes": "Cooler compressor fixed. Restocked energy drinks.",
+    "shelfScore": 4
+  },
+  {
+    "id": "v-010",
+    "accountId": "a-102",
+    "date": "2026-07-20",
+    "notes": "Morning check-in, confirmed Wednesday delivery window.",
+    "shelfScore": 5
+  }
+]
