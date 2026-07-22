@@ -26,7 +26,7 @@ Static data lives in `src/data/*.json` and is read through the typed loaders
 in `src/data/index.ts`. Submitted orders persist to `localStorage`
 (`src/state/orders.ts`).
 
-## Status: pricing is intentionally missing
+## Status: three modules are intentionally missing
 
 Three modules of the **Field Operations Suite** described in [`SPEC.md`](SPEC.md)
 are deliberately unimplemented: the pricing engine (`src/pricing/engine.ts`), the
