@@ -1,24 +1,37 @@
-# Feature Spec — Promotion & Pricing Engine (Order Capture)
+# Feature Spec — Field Operations Suite (Pricing · Shelf Audit · Route Settlement)
 
-> **This is the challenge.** The Order screen (`/orders/new`) currently builds a cart
-> but applies **no promotions**. Your agent must implement the pricing engine described
-> below and wire it into the Order screen. Scoring is done against a hidden test suite
+> **This is the challenge.** Three interdependent modules are missing from this app.
+> Your agent must implement all three. Scoring is done against a hidden test suite
 > written strictly from this document — if the spec is ambiguous to you, it was
 > ambiguous to everyone; the spec text is the single source of truth.
 
-## 1. Deliverables
+## 1. Deliverables (all three are scored)
 
-1. A pure function with this exact signature, exported from `src/pricing/engine.ts`:
+1. **Part A — Pricing engine** (§2–§7): `src/pricing/engine.ts` exporting
 
    ```ts
    export function priceOrder(input: PriceOrderInput): PricedOrder
    ```
 
-2. The Order screen (`src/pages/OrderPage.tsx`) must use `priceOrder` to display,
-   for each cart line: gross, applied promotion name (or —), discount, net; and an
-   order summary showing subtotal, order-level discount (with promotion name), and total.
-3. Submitting the order appends it to the visit log (existing `saveOrder` helper in
-   `src/state/orders.ts`) including the full `PricedOrder` breakdown.
+2. **Part B — Shelf audit** (§10): `src/audit/shelfAudit.ts` exporting
+
+   ```ts
+   export function auditAccounts(asOf: string): AccountAudit[]
+   ```
+
+3. **Part C — Route settlement** (§11): `src/settlement/settle.ts` exporting
+
+   ```ts
+   export function settleRoute(input: SettleRouteInput): RouteSettlement
+   ```
+
+   Part C **must** import and reuse `priceOrder` from `../pricing/engine` — it is
+   judged against *your* pricing module, so the parts must agree.
+
+All modules read data via the loaders in `src/data/index.ts` (`getProducts`,
+`getAccounts`, `getPromotions`, `getRoutes`, `getVisits`, `getProduct`, `getAccount`).
+Do not re-read the JSON files directly. (The Order-screen UI wiring described in §8 is
+**not scored** — skip it unless you have time to spare.)
 
 ## 2. Types
 
@@ -132,7 +145,7 @@ Promotions live in `src/data/promotions.json`. Three `type` values exist:
 - `qty` ≤ 0 or non-integer → throw `Error("Invalid qty for <productId>")`.
 - A threshold promo may push `total` toward 0 but never negative.
 
-## 8. UI acceptance (Order screen)
+## 8. UI acceptance (Order screen) — not scored
 
 - Adding products to the cart recalculates pricing live (on every cart change).
 - Each line shows the applied promotion **name** (not id) or "—".
@@ -142,7 +155,151 @@ Promotions live in `src/data/promotions.json`. Three `type` values exist:
 
 ## 9. Scoring — hidden tests, judged at the end
 
-**This repo ships with no tests.** Your agent builds `priceOrder` from this document and
-must not write or run tests. At judging time a hidden suite — written strictly from this
-spec, covering every rule and edge case above — is run against your `engine.ts` to score
-correctness. This document is the entire surface: read it carefully.
+**This repo ships with no tests.** Your agent builds all three modules from this document
+and must not write or run tests. At judging time a hidden suite — written strictly from
+this spec, covering every rule and edge case in Parts A, B, and C — is run against your
+modules to score correctness. Part C is exercised through *your* `priceOrder`, so pricing
+mistakes surface in settlement too. This document is the entire surface: read it carefully.
+
+---
+
+## 10. Part B — Shelf Audit (`src/audit/shelfAudit.ts`)
+
+Field managers need a health readout per account, computed from the visit log.
+
+### 10.1 Signature & types
+
+```ts
+export interface AccountAudit {
+  accountId: string
+  weightedScore: number | null   // §10.3, rounded per §6; null if no counted visits
+  trend: 'up' | 'down' | 'flat' | null   // §10.4; null if fewer than 2 counted visits
+  daysSinceVisit: number | null  // §10.5; null if no counted visits
+  overdue: boolean               // §10.5
+  status: 'healthy' | 'watch' | 'critical' | 'unvisited'   // §10.6
+}
+
+export function auditAccounts(asOf: string): AccountAudit[]
+```
+
+- `asOf` must match `YYYY-MM-DD`; otherwise throw `Error("Invalid date: <asOf>")`.
+- Returns **one entry per account** in `accounts.json`, sorted by `accountId` ascending.
+
+### 10.2 Counted visits
+
+For each account, count only visits with `date ≤ asOf` (inclusive; compare ISO strings).
+Order counted visits **most recent first**: `date` descending, ties broken by `id`
+descending. ("Latest" below always means the first visit in this order.)
+
+### 10.3 Weighted score
+
+Take up to the **3 most recent** counted visits with weights **3, 2, 1** (most recent
+gets 3). `weightedScore = round2( Σ(weightᵢ × shelfScoreᵢ) / Σ(weightᵢ) )` using §6
+half-up rounding. With 2 visits the divisor is 5; with 1 visit it is 3 (i.e. the score
+itself); with 0 visits `weightedScore` is `null`.
+
+### 10.4 Trend
+
+Requires at least 2 counted visits: compare the latest score `s₁` to the previous `s₂`
+— `'up'` if `s₁ > s₂`, `'down'` if `s₁ < s₂`, `'flat'` if equal. Otherwise `null`.
+
+### 10.5 Recency
+
+`daysSinceVisit` = whole calendar days from the latest counted visit's date to `asOf`
+(date-only arithmetic; same day → 0). `null` if no counted visits.
+`overdue` = `true` when `daysSinceVisit` is `null` **or** strictly greater than **14**.
+(Exactly 14 days is *not* overdue.)
+
+### 10.6 Status
+
+- `'unvisited'` — no counted visits.
+- `'critical'` — `weightedScore < 2.5`.
+- `'watch'` — `2.5 ≤ weightedScore < 3.5`.
+- `'healthy'` — `weightedScore ≥ 3.5`.
+
+Boundaries are decided on the **rounded** `weightedScore` (exactly 2.5 → watch;
+exactly 3.5 → healthy).
+
+---
+
+## 11. Part C — Route Settlement (`src/settlement/settle.ts`)
+
+End-of-day: given the orders captured along a route, produce the route's settlement.
+
+### 11.1 Signature & types
+
+```ts
+export interface SettleRouteInput {
+  routeId: string
+  date: string                    // pricing date, passed through to priceOrder
+  orders: Array<{ accountId: string; lines: CartLine[] }>
+}
+
+export interface RouteSettlement {
+  routeId: string
+  date: string
+  grossTotal: number              // §11.3
+  lineDiscountTotal: number
+  orderDiscountTotal: number
+  discountTotal: number
+  netTotal: number
+  perCategory: Record<string, number>   // §11.4
+  promoUsage: Record<string, number>    // §11.5
+  commission: number              // §11.6
+  stopsVisited: string[]          // §11.7
+  stopsMissed: string[]
+}
+
+export function settleRoute(input: SettleRouteInput): RouteSettlement
+```
+
+### 11.2 Validation & pricing
+
+- Unknown `routeId` (via `getRoutes()`) → throw `Error("Unknown route: <routeId>")`.
+- Every order's `accountId` must be one of the route's stops; otherwise throw
+  `Error("Account not on route: <accountId>")`. Multiple orders for the same stop are
+  allowed. An empty `orders` array is valid.
+- Price **each order** by calling `priceOrder({ lines, accountId, date })` from
+  `../pricing/engine`. All of §11.3–§11.6 aggregate over those results. Any error
+  thrown by `priceOrder` propagates unchanged.
+
+### 11.3 Money totals (all rounded per §6, half-up 2dp)
+
+- `grossTotal` = round2( sum of every priced line's `gross` ).
+- `lineDiscountTotal` = round2( sum of every priced line's `discount` ).
+- `orderDiscountTotal` = round2( sum of every order's `orderLevel.discount` ).
+- `discountTotal` = round2( lineDiscountTotal + orderDiscountTotal ).
+- `netTotal` = round2( sum of every order's `total` ).
+
+### 11.4 Per-category nets
+
+`perCategory` maps each product category that appears in the orders to
+round2( sum of its lines' `net` ). Categories with no lines are **absent** (not 0).
+**Order-level discounts are NOT allocated to categories.** Keys sorted ascending.
+
+### 11.5 Promotion usage
+
+`promoUsage` counts applications: each priced **line** with `appliedPromoId` adds 1 to
+that promo; each order's `orderLevel.appliedPromoId` (when non-null) adds 1. Promos
+never applied are absent. Keys sorted ascending.
+
+### 11.6 Commission — marginal tiers on `netTotal`
+
+Commission is **marginal** (like tax brackets), computed on `netTotal`, rounded per §6
+only at the end:
+
+| Tier | Portion of netTotal | Rate |
+|---|---|---|
+| 1 | first 200.00 | 2% |
+| 2 | over 200.00 up to 500.00 | 5% |
+| 3 | over 500.00 | 8% |
+
+Example: netTotal 316.86 → 200×2% + 116.86×5% = 4.00 + 5.843 = 9.843 → **9.84**.
+(A flat single-rate reading is wrong.)
+
+### 11.7 Stops
+
+- `stopsVisited` = the route's stop `accountId`s that have **≥ 1 order**, in **route
+  stop order**, no duplicates (even if an account appears twice as a stop, list it once,
+  at its first position).
+- `stopsMissed` = the remaining stop accountIds, in route stop order.

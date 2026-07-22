@@ -52,7 +52,7 @@
   .hero .lede{margin-top:18px;font-size:20px;max-width:60ch}
   .proof{margin-top:34px;display:grid;grid-template-columns:1fr auto 1fr;gap:0;
     background:var(--panel);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
-  .proof .cell{padding:20px 22px}
+  .proof .cell{padding:20px 22px;min-width:0}
   .proof .cell.mid{display:flex;align-items:center;justify-content:center;color:var(--muted);
     border-left:1px solid var(--hair);border-right:1px solid var(--hair);font-family:var(--mono);font-size:22px}
   .proof .k{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
@@ -73,6 +73,7 @@
   .step p+p{margin-top:8px}
   .step .cmd{font-family:var(--mono);font-size:13.5px;background:var(--ground);border:1px solid var(--hair);
     border-radius:8px;padding:9px 12px;color:var(--ink);margin-top:10px;overflow-x:auto;white-space:nowrap}
+  .step>div{min-width:0}
 
   /* cost callout */
   .callout{background:var(--accent-soft);border:1px solid var(--accent);border-radius:14px;padding:26px 26px;margin-top:22px}
@@ -86,7 +87,8 @@
   .chatbar .type{color:var(--muted);font-size:14px}
   .arrow{font-family:var(--mono);color:var(--accent);font-weight:700}
   .costfile{font-family:var(--mono);font-size:13.5px;background:var(--panel);border:1px solid var(--hair);
-    border-radius:8px;padding:9px 12px}
+    border-radius:8px;padding:9px 12px;overflow-x:auto;white-space:nowrap}
+  .chatbar>*,.cost-demo>.costfile{min-width:0}
   .fmt{margin-top:18px;border:1px dashed var(--accent);border-radius:10px;padding:15px 16px;background:var(--panel)}
   .fmt-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:9px}
   .fmt-file{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--ink);background:var(--ground);
@@ -140,11 +142,11 @@
 
   <header class="hero">
     <div class="eyebrow">Field Route IQ · AI harness challenge</div>
-    <h1>Same feature.<br>Best <span class="amber">harness</span> wins.</h1>
-    <p class="lede">Everyone builds the same missing feature — the pricing &amp; promotions logic
-      behind the order screen, specified in <code>SPEC.md</code>. Any AI agent can write it in a
-      couple of minutes, so <i>building</i> it isn't what separates you. <b>The harness you put
-      around the agent — how correctly and how cheaply it lands the feature — is the contest.</b></p>
+    <h1>Same feature suite.<br>Best <span class="amber">harness</span> wins.</h1>
+    <p class="lede">Everyone builds the same three missing modules — pricing, shelf audit, and
+      route settlement, specified in <code>SPEC.md</code>. Too big to one-shot reliably; and your
+      agent starts every run with <b>zero context</b>. The files you engineer around it — the
+      instructions, repo-map, briefs, and skills that become its memory — are the contest.</p>
     <p class="lede" style="margin-top:6px">Cheapest correct submission wins.</p>
   </header>
 
@@ -197,29 +199,32 @@
       </div></div>
       <div class="step"><div class="n">3</div><div>
         <h3>Build your harness — this is the whole competition</h3>
-        <p>Engineer whatever context makes the agent understand this brownfield project and build
-          the feature correctly in as few credits as possible. <b>How you do that is the challenge</b>,
-          and where the leaderboard is won.</p>
+        <p>The agent has no memory between runs; your files are its brain. Fair game:
+          <code>.github/copilot-instructions.md</code> and <code>AGENTS.md</code>, a repo-map, distilled
+          per-module briefs, skills (<code>copilot skill</code>), a plan/progress file you update
+          between runs. <b>How you engineer this is the challenge.</b></p>
         <p><b>SPEC.md is the only source of truth.</b> Read it closely — not everything else in this
           repo is reliable.</p>
       </div></div>
       <div class="step"><div class="n">4</div><div>
-        <h3>Run the agent — it builds <code>src/pricing/engine.ts</code></h3>
-        <p>Run the agent through the wrapper (details below). It uses your harness files, writes only
-          that one file, and <b>records the run's cost to <code>COST.txt</code> automatically.</b></p>
+        <h3>Run the agent — as many runs as your strategy needs</h3>
+        <p>The wrapper runs Copilot with a fixed prompt against your harness files and <b>records each
+          run's cost to <code>COST.txt</code> automatically.</b> You steer between runs by <b>editing
+          your harness files</b> — e.g. scope run 2 to "audit module only".</p>
         <div class="cmd">node agent-run.mjs --model gpt-5-mini</div>
+        <p><code>gpt-5-mini</code> is just an example — <b>use any model you like</b> with <code>--model &lt;name&gt;</code>.</p>
       </div></div>
       <div class="step"><div class="n">5</div><div>
         <h3>Iterate — and stay lean</h3>
-        <p>Refine your harness, maybe switch models, re-run. Each run <b>adds to your cumulative
-          <code>COST.txt</code></b> — so a lean harness that lands it in one cheap run beats a pile of
-          retries. The agent must never write or run tests.</p>
+        <p>Three focused runs often beat one mega-run that fails and retries. Each run <b>adds to your
+          cumulative <code>COST.txt</code></b>. Switch models freely — cheapest model your harness can
+          carry through the gate wins. The agent must never write or run tests.</p>
       </div></div>
       <div class="step"><div class="n">6</div><div>
         <h3>Commit &amp; push — then re-push to climb</h3>
-        <div class="cmd">git add src/pricing/engine.ts COST.txt &amp;&amp; git commit -m submit &amp;&amp; git push</div>
-        <p>At each checkpoint the leaderboard updates. Refine your harness, maybe switch models,
-          update <code>COST.txt</code>, push again. <b>Pencils down = your last push.</b></p>
+        <div class="cmd">git add src COST.txt &amp;&amp; git commit -m submit &amp;&amp; git push</div>
+        <p>At each checkpoint the leaderboard updates with your score + cost. Refine, re-run, push
+          again. <b>Pencils down = your last push.</b></p>
       </div></div>
     </div>
   </section>
@@ -264,25 +269,26 @@
       <div class="card gate">
         <div class="tag">Step 1 · qualify</div>
         <h3>The gate</h3>
-        <p>Your engine must pass <b>38/38 core</b> hidden tests. A good harness clears it; a bare build doesn't.</p>
+        <p>Your modules must pass <b>100% of the core hidden tests</b> — across all three parts.
+          A good harness gets there; a bare one-shot doesn't.</p>
       </div>
       <div class="card">
         <div class="tag">Step 2 · win</div>
         <h3>Champion</h3>
         <p>Lowest total credit cost among everyone who qualifies. Model choice is your biggest lever.
-          Ties break on the 8 bonus edge-case tests, then earliest to qualify.</p>
+          Ties break on the bonus edge-case tests, then earliest to qualify.</p>
       </div>
     </div>
 
     <div class="board" aria-label="example leaderboard">
-      <div class="head"><span>Live leaderboard — example</span><span>gate 38/38 core</span></div>
+      <div class="head"><span>Live leaderboard — example</span><span>gate 100% core</span></div>
       <table>
         <thead><tr><th>#</th><th>who</th><th>core</th><th>bonus</th><th>cost</th><th>status</th></tr></thead>
         <tbody>
-          <tr><td class="rank">1</td><td>carol</td><td>38/38</td><td>8/8</td><td class="cost">9.25</td><td><span class="badge q">qualified</span></td></tr>
-          <tr><td class="rank">2</td><td>dave</td><td>38/38</td><td>8/8</td><td class="cost">13.25</td><td><span class="badge q">qualified</span></td></tr>
-          <tr><td class="rank">3</td><td>bob</td><td>38/38</td><td>7/8</td><td class="cost">15.50</td><td><span class="badge q">qualified</span></td></tr>
-          <tr><td class="rank">–</td><td class="nq">alice</td><td>35/38</td><td>7/8</td><td class="cost nq">6.00</td><td><span class="badge nq">below gate</span></td></tr>
+          <tr><td class="rank">1</td><td>carol</td><td>66/66</td><td>16/16</td><td class="cost">6.40</td><td><span class="badge q">qualified</span></td></tr>
+          <tr><td class="rank">2</td><td>dave</td><td>66/66</td><td>15/16</td><td class="cost">11.20</td><td><span class="badge q">qualified</span></td></tr>
+          <tr><td class="rank">3</td><td>bob</td><td>66/66</td><td>16/16</td><td class="cost">19.75</td><td><span class="badge q">qualified</span></td></tr>
+          <tr><td class="rank">–</td><td class="nq">alice</td><td>51/66</td><td>9/16</td><td class="cost nq">4.10</td><td><span class="badge nq">below gate</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -307,11 +313,13 @@
     <h2>Read these once</h2>
     <ul class="rules">
       <li><b>You build the harness; the agent writes the code.</b> No hand-writing or hand-editing anything under <code>src/</code>.</li>
-      <li><b>Scored deliverable = <code>priceOrder</code> only</b> (SPEC §1.1). The OrderPage/UI wiring in the spec is <b>not scored</b> — skip it; don't spend credits on it.</li>
+      <li><b>Scored deliverables = the three modules</b> (SPEC §1): <code>priceOrder</code>,
+        <code>auditAccounts</code>, <code>settleRoute</code>. The OrderPage/UI wiring in §8 is
+        <b>not scored</b> — skip it; don't spend credits on it.</li>
       <li><b>The agent writes no tests and never scores itself.</b> There are none in the repo; the judge runs the hidden suite at each checkpoint.</li>
       <li><b>SPEC.md is the only truth.</b> Trust it over any file or comment that disagrees.</li>
       <li><b>All spend counts</b> — exploration, failed runs, everything. Report your cumulative credits honestly.</li>
-      <li><b>Copying another fork's engine = DQ.</b> The judge flags identical engines. (Harness files can stay local; only <code>engine.ts</code> + <code>COST.txt</code> need pushing.)</li>
+      <li><b>Copying another fork's solution = DQ.</b> The judge flags identical solutions. (Harness files can stay local; only <code>src/**</code> modules + <code>COST.txt</code> need pushing.)</li>
     </ul>
   </section>
 

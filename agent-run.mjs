@@ -27,11 +27,16 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const COST_FILE = join(HERE, 'COST.txt')
 
+// Steer between runs by EDITING your harness files (instructions/AGENTS.md/briefs/skills):
+// e.g. "pricing is done; build only the audit module this run."
 const STD_PROMPT =
-  'Implement the promotion and pricing engine at src/pricing/engine.ts, exported as ' +
-  'priceOrder. The authoritative spec is SPEC.md — but if the repository instructions ' +
-  'designate a distilled spec or reading list, follow that instead of re-reading everything. ' +
-  'Build only that file. Do not write or run tests.'
+  'Implement the Field Operations Suite specified in SPEC.md: (A) src/pricing/engine.ts ' +
+  'exporting priceOrder, (B) src/audit/shelfAudit.ts exporting auditAccounts, and ' +
+  '(C) src/settlement/settle.ts exporting settleRoute, which must reuse priceOrder from ' +
+  '../pricing/engine. The authoritative spec is SPEC.md — but if the repository ' +
+  'instructions designate a distilled spec, plan, or reading list, or scope this run to a ' +
+  'subset of the modules, follow that instead. Create files only under src/pricing, ' +
+  'src/audit, and src/settlement. Do not write or run tests.'
 
 // ---- args: --model <name>, --check. Reject anything else (teaches the lesson). ----
 const argv = process.argv.slice(2)

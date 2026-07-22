@@ -68,5 +68,33 @@
     "date": "2026-07-20",
     "notes": "Morning check-in, confirmed Wednesday delivery window.",
     "shelfScore": 5
+  },
+  {
+    "id": "v-011",
+    "accountId": "a-101",
+    "date": "2026-06-20",
+    "notes": "Initial summer reset. Cooler compressor rattling, flagged for service.",
+    "shelfScore": 2
+  },
+  {
+    "id": "v-012",
+    "accountId": "a-105",
+    "date": "2026-07-18",
+    "notes": "Follow-up with new manager. Planogram partially adopted.",
+    "shelfScore": 3
+  },
+  {
+    "id": "v-013",
+    "accountId": "a-104",
+    "date": "2026-07-19",
+    "notes": "Cola back in stock but facings unchanged since last visit.",
+    "shelfScore": 2
+  },
+  {
+    "id": "v-014",
+    "accountId": "a-106",
+    "date": "2026-07-19",
+    "notes": "Trail mix display moved for a seasonal reset; lost the register spot.",
+    "shelfScore": 3
   }
 ]

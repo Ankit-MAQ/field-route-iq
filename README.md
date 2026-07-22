@@ -28,12 +28,13 @@ in `src/data/index.ts`. Submitted orders persist to `localStorage`
 
 ## Status: pricing is intentionally missing
 
-The order screen currently totals the cart at list price — **no promotions
-are applied**. The promotion & pricing engine described in [`SPEC.md`](SPEC.md)
-is deliberately unimplemented (`src/pricing/engine.ts` does not exist yet).
-Your job is to get an AI agent to build it. **This repo ships with no pricing
-tests** — a hidden suite scores your work at the end. See [`RULES.md`](RULES.md)
-for the format and how to submit.
+Three modules of the **Field Operations Suite** described in [`SPEC.md`](SPEC.md)
+are deliberately unimplemented: the pricing engine (`src/pricing/engine.ts`), the
+shelf audit (`src/audit/shelfAudit.ts`), and the route settlement
+(`src/settlement/settle.ts`). Your job is to get an AI agent to build all three.
+**This repo ships with no tests for them** — a hidden suite scores your work at
+the end. See [`RULES.md`](RULES.md) for the format and [`QUICKSTART.md`](QUICKSTART.md)
+for how to submit.
 
 Everything else — routing, data loaders, order persistence — is complete:
 
